@@ -11,8 +11,8 @@ void loop() {
 }
 
 float HSVtoNitrate(int r, int g, int b){
-  float h, s, v;
-  float x;
+  double h;
+  double x;
   h = RGBtoHSV(r, g, b);
   //print (h, s, v)
   if (h > 350 and h < 360){
@@ -77,7 +77,7 @@ float remapRange(float val, float oldMin, float oldMax, float newMin, float newM
   return newValue;
 }
 
-int RGBtoHSV(int r, int g, int b){
+double RGBtoHSV(int r, int g, int b){
   r, g, b = r/255.0, g/255.0, b/255.0;
   // R, G, B values are divided by 255
     // to change the range from 0..255 to 0..1
