@@ -1,19 +1,10 @@
 #include <math.h>
 
-void setup() {
-  // put your setup code here, to run once:
-  Serial.begin(9600);
-}
-
-void loop() {
-  // put your main code here, to run repeatedly:
-
-}
 
 float HSVtoNitrate(int r, int g, int b){
-  double h;
-  double x;
-  h = RGBtoHSV(r, g, b);
+  float h, s, v;
+  float x;
+  h, s, v = RGBtoHSV(r, g, b);
   //print (h, s, v)
   if (h > 350 and h < 360){
       h -= 360.0;
@@ -77,7 +68,7 @@ float remapRange(float val, float oldMin, float oldMax, float newMin, float newM
   return newValue;
 }
 
-double RGBtoHSV(int r, int g, int b){
+float RGBtoHSV(int r, int g, int b){
   r, g, b = r/255.0, g/255.0, b/255.0;
   // R, G, B values are divided by 255
     // to change the range from 0..255 to 0..1
@@ -88,32 +79,24 @@ double RGBtoHSV(int r, int g, int b){
     // h, s, v = hue, saturation, value
     double cmax = max(r, max(g, b)); // maximum of r, g, b
     double cmin = min(r, min(g, b)); // minimum of r, g, b
-    float diff = cmax - cmin; // diff of cmax and cmin.
+    int diff = cmax - cmin; // diff of cmax and cmin.
     double h = -1, s = -1;
-    int diffint;
-    diffint = int(diff * 100000);
  
     // if cmax and cmax are equal then h = 0
     if (cmax == cmin)
         h = 0;
  
     // if cmax equal r then compute h
-    else if (cmax == r){
-        h = (60 * ((g - b) / diffint) + 360) % 360;
-        h = h / 100000;
-    }
+    else if (cmax == r)
+        h = (60 * ((g - b) / diff) + 360) % 360;
  
     // if cmax equal g then compute h
-    else if (cmax == g){
-        h = (60 * ((b - r) / diffint) + 120) % 360;
-        h = h / 100000;
-    }
+    else if (cmax == g)
+        h = (60 * ((b - r) / diff) + 120) % 360;
  
     // if cmax equal b then compute h
-    else if (cmax == b){
-        h = (60 * ((r - g) / diffint) + 240) % 360;
-        h = h / 100000;
-    }
+    else if (cmax == b)
+        h = (60 * ((r - g) / diff) + 240) % 360;
  
     // if cmax equal zero
     if (cmax == 0)
@@ -123,5 +106,5 @@ double RGBtoHSV(int r, int g, int b){
  
     // compute v
     double v = cmax * 100;
-    return h;
+    return h, s, v;
 }
