@@ -11,11 +11,11 @@ DateTime MyDateAndTime;
 #define greenpin 5                                                //pwm output for GREEN anode use 2K resistor
 #define bluepin 6                                                 //pwm output for BLUE anode use 1K resistor
  
- 
+File myFile;
  
 #define commonAnode false                                         // set to false if using a common cathode LED                     
  
-const int chipSelect = 4; 
+const int chipSelect = 10; 
  
 byte gammatable[256];                                             // our RGB -> eye-recognized gamma color
  
@@ -249,29 +249,50 @@ void readTheTime(){
 }
 
 void SDWrite(double nitrates){
+  MyDateAndTime = Clock.read();
   // make a string for assembling the data to log:
   String dataString;
   dataString += "nitrates: ";
-  dataString += String(nitrates);
-  dataString += " | time: ";
-  dataString += String(MyDateAndTime.Hour); dataString += ":"; dataString += String(MyDateAndTime.Minute);
-  dataString += " | date: ";
-  dataString += String(MyDateAndTime.Month); dataString += "/"; dataString += String(MyDateAndTime.Day); dataString += "/"; dataString += String(MyDateAndTime.Year);
-  Serial.println(" ");
+  dataString += nitrates;
+  //dataString += " | time: ";
+  //dataString += MyDateAndTime.Hour;
+  //dataString += String(MyDateAndTime.Hour); dataString += ":"; dataString += String(MyDateAndTime.Minute);
+  /*data += " | date: ";
+  data += MyDateAndTime.Month; 
+  data += "/"; 
+  data += MyDateAndTime.Day; 
+  data += "/"; 
+  data += MyDateAndTime.Year;*/
+  /*.println(" ");
   Serial.print(dataString);
+  Serial.print(data);*/
 
   // open the file. note that only one file can be open at a time,
   // so you have to close this one before opening another.
-  File dataFile = SD.open("NatureCenterNitrates.txt", FILE_WRITE);
-  if (dataFile) {
-    dataFile.println(dataString);
-    dataFile.close();
-    // print to the serial port too:
-    Serial.println("wrote to SD Card");
-  }
+  //dataFile.close();
+  myFile = SD.open("test.txt", FILE_WRITE);
 
-  // if the file isn't open, pop up an error:
-  else {
-    Serial.println("error opening file!");
+  // if the file opened okay, write to it:
+  if (myFile) {
+    Serial.print("Writing to test.txt...");
+    myFile.print(dataString);
+    myFile.print(" | time: ");
+    myFile.print(MyDateAndTime.Hour);
+    myFile.print(":");
+    myFile.print(MyDateAndTime.Minute);
+    myFile.print(" | date: ");
+    myFile.print(MyDateAndTime.Month);
+    myFile.print("/");
+    myFile.print(MyDateAndTime.Day);
+    myFile.print("/");
+    myFile.print("20");
+    myFile.println(MyDateAndTime.Year);
+    // close the file:
+    myFile.close();
+    Serial.println("done.");
+  } else {
+    // if the file didn't open, print an error:
+    Serial.println("error opening test.txt");
   }
+  
 }
